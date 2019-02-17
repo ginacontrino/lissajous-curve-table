@@ -34,24 +34,33 @@
 <script> 
   const canvas = document.getElementById('canvas')
   const context = canvas.getContext('2d')
-  const width = 500
-  const height = 500
-
+  context.fillStyle = "white"
+  const width = 250
+  const height = 250
+  const shape = []
   const start = new Date()
-  function draw() {
-    context.clearRect(0,0, width,height)
-    const angle = (new Date() - start) * 0.002
 
-    const circleYs = []
-    const circleXs = []
-    context.fillStyle = "white"
-    const x = (Math.sin(angle) + 1) * 250
-    const y = (Math.sin(angle + (Math.PI/2)) + 1) * 250
-
+  function variation({angle, period1 = 1, period2 = 1}) {
+    const x = (Math.sin(period1 * angle) + 1) * (height/2)
+    const y = (Math.sin(period2 * (angle + (Math.PI/2))) + 1) *  (height/2)
+    
     context.fillRect(x,0,2,height)
     context.fillRect(0,y,width,2)
 
-    context.fillRect(x,y,2,2)
+    if(angle <= (Math.PI * 2)) {
+      shape.push([x,y])
+    }
+
+    for (let i = 0; i < shape.length; i++) {
+      context.fillRect(shape[i][0],shape[i][1],2,2)
+    }
+  }
+
+  function draw() {
+    context.clearRect(0,0,width,height)
+    const angle = (new Date() - start) * 0.001
+
+    variation({angle})
 
     window.requestAnimationFrame(draw)
   }
